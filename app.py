@@ -49,10 +49,11 @@ if choice == "App":
 
     #Plot graph
     fig = px.violin(RCCdf, x=selected_metadata,
-                    y=selected_marker,
-                    box=True,
-                    points='all',
-                    hover_data=["Patient ID"]
-                    # animation_frame="Metastatic"
-                    )
+    y=selected_marker,
+    box=True,
+    points='all',
+    hover_data=["Patient ID"]
+    # animation_frame="Metastatic"
+    )
     st.plotly_chart(fig)
+    
