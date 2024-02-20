@@ -77,6 +77,7 @@ if choice == "App":
                                     opacity=1,  # Emphasize
                                     points='all',
                                     hoverinfo='all',
+                                    hovertext=RCCdf_filtered['Patient ID'].astype(str),
                                     showlegend=False))
 
     # Update the layout if needed
