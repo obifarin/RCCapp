@@ -7,7 +7,7 @@ with st.sidebar:
     #st.image("data/image_abstract.png")
     st.title("A Renal Cell Carcinoma Biomarker Study Web App :hospital:")
     choice = st.radio("Navigation", ["Introduction", "App"])
-    st.info("App by Olatomiwa Bifarin, Ph.D. :male-scientist:")
+    st.info("App by [Olatomiwa Bifarin](https://www.linkedin.com/in/obifarin/)")
     # Add patient ID search input
     patient_search = st.text_input("Search for Patient ID")
 
