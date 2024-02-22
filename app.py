@@ -44,8 +44,8 @@ if choice == "App":
 
     # Filter DataFrame based on patient ID search
     if patient_search:
-        RCCdf_filtered = RCCdf[RCCdf["Patient ID"].astype(str).str.strip().lower() == patient_search.lower()]
-        RCCdf_unselected = RCCdf[RCCdf["Patient ID"].astype(str).str.strip().lower() != patient_search.lower()]
+        RCCdf_filtered = RCCdf[RCCdf["Patient ID"].astype(str).str.strip().str.lower() == patient_search.lower()]
+        RCCdf_unselected = RCCdf[RCCdf["Patient ID"].astype(str).str.strip().str.lower() != patient_search.lower()]
     else:
         RCCdf_filtered = pd.DataFrame(columns=RCCdf.columns)  # Empty DataFrame for consistency
         RCCdf_unselected = RCCdf  # Use all data if no search
