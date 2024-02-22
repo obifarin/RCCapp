@@ -29,7 +29,7 @@ if choice == 'Introduction':
 if choice == "App":
     st.subheader("""This graph shows the seven biomarkers discovered in our published work with selected metadata.""")
     with st.expander("How to use"):
-        st.write("""On your sidebar, use the dropdown to select Patient ID you are searching, relevant RCC meta-data of your interest and the urine biomarkers. 
+        st.write("""On your sidebar, type the Patient ID you are searching for, use the dropdown to select relevant RCC meta-data of your interest and the urine biomarkers. 
                  The Graph is interactive, hover your mouse on data points to see Patient ID. Metabolites abundances were log-transformed.""")
 
     # Import cleaned up logtransformed data
