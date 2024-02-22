@@ -67,7 +67,7 @@ if choice == "App":
                                 name=cat,
                                 box_visible=True,
                                 meanline_visible=True,
-                                opacity=0.3,  # Greyed out
+                                opacity=0.6,  # Greyed out
                                 points='all',
                                 hoverinfo='text',
                                 text=hover_text,
