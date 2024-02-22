@@ -42,6 +42,11 @@ if choice == "App":
     selected_metadata = st.sidebar.selectbox("Select an RCC metadata", rcc_metadata)
     selected_marker = st.sidebar.selectbox("Select a metabolite", marker_data)
 
+    #New data
+    # Trim spaces and ensure case-insensitive comparison
+    patient_search = patient_search.strip().lower()
+    RCCdf["Patient ID"] = RCCdf["Patient ID"].astype(str).str.strip().str.lower()
+
     # Filter DataFrame based on patient ID search
     if patient_search:
         RCCdf_filtered = RCCdf[RCCdf["Patient ID"].astype(str) == patient_search]
