@@ -42,42 +42,51 @@ if choice == "App":
     selected_metadata = st.sidebar.selectbox("Select an RCC metadata", rcc_metadata)
     selected_marker = st.sidebar.selectbox("Select a metabolite", marker_data)
 
+
     # Filter DataFrame based on patient ID search
     if patient_search:
-        RCCdf_filtered = RCCdf[RCCdf["Patient ID"].astype(str).str.strip().str.lower() == patient_search.lower()]
-        RCCdf_unselected = RCCdf[RCCdf["Patient ID"].astype(str).str.strip().str.lower() != patient_search.lower()]
+        RCCdf_filtered = RCCdf[RCCdf["Patient ID"].astype(str).str.strip().lower() == patient_search.lower()]
+        RCCdf_unselected = RCCdf[RCCdf["Patient ID"].astype(str).str.strip().lower() != patient_search.lower()]
     else:
-        RCCdf_filtered = pd.DataFrame(columns=RCCdf.columns)  # Empty DataFrame for consistency
-        RCCdf_unselected = RCCdf  # Use all data if no search
+        RCCdf_filtered = pd.DataFrame(columns=RCCdf.columns)  # Empty if no search
+        RCCdf_unselected = RCCdf  # All data if no search
 
     # Create a Plotly Graph Object Figure
     fig = go.Figure()
 
-    # Add unselected (greyed out) data points with correct hover information
+    # Function to generate hover text
+    def generate_hover_text(df, marker):
+        return df.apply(lambda row: f"ID: {row['Patient ID']}<br>{marker}: {row[marker]}", axis=1)
+
+    # Add unselected (greyed out) data points
     for cat in RCCdf_unselected[selected_metadata].unique():
-        fig.add_trace(go.Violin(x=RCCdf_unselected[RCCdf_unselected[selected_metadata] == cat][selected_metadata],
-                                y=RCCdf_unselected[RCCdf_unselected[selected_metadata] == cat][selected_marker],
+        category_df = RCCdf_unselected[RCCdf_unselected[selected_metadata] == cat]
+        hover_text = generate_hover_text(category_df, selected_marker)
+        fig.add_trace(go.Violin(x=category_df[selected_metadata],
+                                y=category_df[selected_marker],
                                 name=cat,
                                 box_visible=True,
                                 meanline_visible=True,
                                 opacity=0.3,  # Greyed out
                                 points='all',
                                 hoverinfo='text',
-                                text=RCCdf_unselected['Patient ID'].astype(str),  # Assign correct hover text
+                                text=hover_text,
                                 showlegend=False))
 
     # Add selected (highlighted) data points, if any
     if not RCCdf_filtered.empty:
         for cat in RCCdf_filtered[selected_metadata].unique():
-            fig.add_trace(go.Violin(x=RCCdf_filtered[RCCdf_filtered[selected_metadata] == cat][selected_metadata],
-                                    y=RCCdf_filtered[RCCdf_filtered[selected_metadata] == cat][selected_marker],
+            category_df = RCCdf_filtered[RCCdf_filtered[selected_metadata] == cat]
+            hover_text = generate_hover_text(category_df, selected_marker)
+            fig.add_trace(go.Violin(x=category_df[selected_metadata],
+                                    y=category_df[selected_marker],
                                     name=cat,
                                     box_visible=True,
                                     meanline_visible=True,
                                     opacity=1,  # Highlight
                                     points='all',
                                     hoverinfo='text',
-                                    text=RCCdf_filtered['Patient ID'].astype(str),  # Ensure correct hover text here too
+                                    text=hover_text,
                                     showlegend=False))
 
     # Update the layout if needed
