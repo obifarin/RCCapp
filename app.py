@@ -42,36 +42,31 @@ if choice == "App":
     selected_metadata = st.sidebar.selectbox("Select an RCC metadata", rcc_metadata)
     selected_marker = st.sidebar.selectbox("Select a metabolite", marker_data)
 
-    #New data
-    # Trim spaces and ensure case-insensitive comparison
-    patient_search = patient_search.strip().lower()
-    RCCdf["Patient ID"] = RCCdf["Patient ID"].astype(str).str.strip().str.lower()
-
     # Filter DataFrame based on patient ID search
     if patient_search:
-        RCCdf_filtered = RCCdf[RCCdf["Patient ID"].astype(str) == patient_search]
-        RCCdf_unselected = RCCdf[RCCdf["Patient ID"].astype(str) != patient_search]
+        RCCdf_filtered = RCCdf[RCCdf["Patient ID"].astype(str).str.strip().lower() == patient_search.lower()]
+        RCCdf_unselected = RCCdf[RCCdf["Patient ID"].astype(str).str.strip().lower() != patient_search.lower()]
     else:
-        RCCdf_filtered = RCCdf
-        RCCdf_unselected = pd.DataFrame(columns=RCCdf.columns)
+        RCCdf_filtered = pd.DataFrame(columns=RCCdf.columns)  # Empty DataFrame for consistency
+        RCCdf_unselected = RCCdf  # Use all data if no search
 
     # Create a Plotly Graph Object Figure
     fig = go.Figure()
 
-    # Add unselected (greyed out) data
-    if not RCCdf_unselected.empty:
-        for cat in RCCdf_unselected[selected_metadata].unique():
-            fig.add_trace(go.Violin(x=RCCdf_unselected[RCCdf_unselected[selected_metadata] == cat][selected_metadata],
-                                    y=RCCdf_unselected[RCCdf_unselected[selected_metadata] == cat][selected_marker],
-                                    name=cat,
-                                    box_visible=True,
-                                    meanline_visible=True,
-                                    opacity=0.3,  # Greyed out
-                                    points='all',
-                                    hoverinfo='skip',  # Optionally disable hover for unselected data
-                                    showlegend=False))
+    # Add unselected (greyed out) data points with correct hover information
+    for cat in RCCdf_unselected[selected_metadata].unique():
+        fig.add_trace(go.Violin(x=RCCdf_unselected[RCCdf_unselected[selected_metadata] == cat][selected_metadata],
+                                y=RCCdf_unselected[RCCdf_unselected[selected_metadata] == cat][selected_marker],
+                                name=cat,
+                                box_visible=True,
+                                meanline_visible=True,
+                                opacity=0.3,  # Greyed out
+                                points='all',
+                                hoverinfo='text',
+                                text=RCCdf_unselected['Patient ID'].astype(str),  # Assign correct hover text
+                                showlegend=False))
 
-    # Add selected data
+    # Add selected (highlighted) data points, if any
     if not RCCdf_filtered.empty:
         for cat in RCCdf_filtered[selected_metadata].unique():
             fig.add_trace(go.Violin(x=RCCdf_filtered[RCCdf_filtered[selected_metadata] == cat][selected_metadata],
@@ -79,10 +74,10 @@ if choice == "App":
                                     name=cat,
                                     box_visible=True,
                                     meanline_visible=True,
-                                    opacity=1,  # Emphasize
+                                    opacity=1,  # Highlight
                                     points='all',
-                                    hoverinfo='all',
-                                    hovertext=RCCdf_filtered['Patient ID'].astype(str),
+                                    hoverinfo='text',
+                                    text=RCCdf_filtered['Patient ID'].astype(str),  # Ensure correct hover text here too
                                     showlegend=False))
 
     # Update the layout if needed
@@ -90,3 +85,4 @@ if choice == "App":
                       violingap=0, violinmode='overlay')
 
     st.plotly_chart(fig)
+
